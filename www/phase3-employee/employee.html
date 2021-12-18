@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>employee Page</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="employee_Template.css">
+    <script src="main.js"></script>
+</head>
+<body>
+    <div class="container-fluid employee-page">
+        <div class="row" id="sidenav">
+            <!-- Side bar responsive -->
+            <ul class="employee-page_left col-sm-2 col-md-4 col-lg-3 sidenav">
+
+                <div class="employee-title">
+                    <h3 class="employee-name text-white mt-1">Ali Baba</h3>
+                    <h6 class="employee-role text-white mb-4">Role: 
+                        <span class="employee-role_title">Employee</span>
+                    </h6>
+
+                    <div class="image-holder">
+                        <img src="avatar/dipu.jpg">
+                    </div>
+                </div>
+    
+                    <li class="employee-page_left-navbar_item" id="update-info">
+                        <a class="employee-page_left-title nav-link h5 text-white" href="employee_update-info.php">
+                            <i class="fas fa-pen-square text-white"></i>
+                            <span id="hidden">Update Info</span>
+                        </a>
+                    </li>
+    
+                    <li class="employee-page_left-navbar_item left-side_item mt-2 active" id="tasks-management">
+                        <a class="employee-page_left-title nav-link h5 text-white" href="task_management.html">
+                            <i class="fas fa-briefcase text-white"></i>
+                            <span >Tasks Management</span>
+                        </a>
+                    </li>
+    
+                    <li class="employee-page_left-navbar_item left-side_item mt-2" id="attendence">
+                        <a class="employee-page_left-title nav-link h5 text-white" href="chief_attendence.html">
+                            <i class="fas fa-calendar-week text-white"></i>
+                            <span>Attendence</span> 
+                        </a>
+                    </li>
+    
+                    <li class="employee-page_left-navbar_item left-side_item mt-2" id="log-out">
+                        <a class="employee-page_left-title nav-link h5 text-white" href="phase1-login/login_page.html">
+                            <i class="fas fa-sign-out-alt text-white"></i>
+                            <span>Log Out</span>
+                        </a>
+                    </li>
+            </ul>
+        </div>
+           <div class="row view-task">
+                <div class="col-sm-11 col-md-9 col-lg-9 col-xl-10 w-100 main view-task-main ">
+                    <div class="view-task border border-3 rounded">
+                        <div class="task-detail p-2"> 
+                            <span class="task-name h4">Mua tập đoàn VinGroup</span>
+                            <p class="task-people h5">Phân công: <span class="task-people-name h5 font-italic">Ali Baba</span> </p>
+                            <p class="task-describe h6">
+                                Dồn ít tiền ăn sáng để mua tập đoàn VinGroup sản xuất xe hơi hộ bác Vượng.
+                            </p>
+                        </div>
+                        <button type="button" class="container_btn--primary btn btn-primary p-2 mr-2" id="file_select" onclick="fileSelect()"><i class="far fa-file-archive mr-2"></i>Choose files</button>
+                        <button type="button" class="container_btn--primary btn btn-outline-success p-2"><i class="far fa-share-square mr-2"></i>Submit task</button>
+                    </div>
+
+                    <div class="view-task border border-3 rounded">
+                        <p>
+                            Con cò bé bé, nó đậu cành treeeeeeeeeeeeeeeeeeeeeee
+                        </p>
+                        <button type="button" class="container_btn--primary btn btn-primary p-2"><i class="far fa-file-archive mr-2"></i>Choose files</button>
+                        <button type="button" class="container_btn--primary btn btn-outline-success p-2"><i class="far fa-share-square mr-2"></i>Submit task</button>
+                    </div>
+
+                    <div class="view-task border border-3 rounded">
+                        <p>
+                            Con cò bé bé, nó đậu cành treeeeeeeeeeeeeeeeeeeeeee
+                        </p>
+                        <button type="button" class="container_btn--primary btn btn-primary p-2"><i class="far fa-file-archive mr-2"></i>Choose files</button>
+                        <button type="button" class="container_btn--primary btn btn-outline-success p-2"><i class="far fa-share-square mr-2"></i>Submit task</button>              
+                    </div>
+
+                    <div class="view-task border border-3 rounded">
+                        <p>
+                            Con cò bé bé, nó đậu cành treeeeeeeeeeeeeeeeeeeeeee
+                        </p>
+                        <button type="button" class="container_btn--primary btn btn-primary p-2"><i class="far fa-file-archive mr-2"></i>Choose files</button>
+                        <button type="button" class="container_btn--primary btn btn-outline-success p-2"><i class="far fa-share-square mr-2"></i>Submit task</button>        
+                    </div>
+
+                    <div class="view-task border border-3 rounded">
+                        <p>
+                            Con cò bé bé, nó đậu cành treeeeeeeeeeeeeeeeeeeeeee
+                        </p>
+                        <button type="button" class="container_btn--primary btn btn-primary p-2"><i class="far fa-file-archive mr-2"></i>Choose files</button>
+                        <button type="button" class="container_btn--primary btn btn-outline-success p-2"><i class="far fa-share-square mr-2"></i>Submit task</button>           
+                    </div>
+
+                    <div class="view-task border border-3 rounded">
+                        <p>
+                            Con cò bé bé, nó đậu cành treeeeeeeeeeeeeeeeeeeeeee
+                        </p>
+                        <button type="button" class="container_btn--primary btn btn-primary p-2"><i class="far fa-file-archive mr-2"></i>Choose files</button>
+                        <button type="button" class="container_btn--primary btn btn-outline-success p-2"><i class="far fa-share-square mr-2"></i>Submit task</button>              
+                    </div>
+
+                    <div class="view-task border border-3 rounded">
+                        <p>
+                            Con cò bé bé, nó đậu cành treeeeeeeeeeeeeeeeeeeeeee
+                        </p>
+                        <button type="button" class="container_btn--primary btn btn-primary p-2"><i class="far fa-file-archive mr-2"></i>Choose files</button>
+                        <button type="button" class="container_btn--primary btn btn-outline-success p-2"><i class="far fa-share-square mr-2"></i>Submit task</button>                 
+                    </div>
+                </div>
+            </div>
+        
+    </div>
+
+    <script>
+        function fileSelect() {
+            let x =  document.getElementById('file_select');
+                console.log(x);
+            
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>
