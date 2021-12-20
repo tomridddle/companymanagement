@@ -1,0 +1,125 @@
+/* shared class */
+
+/* login page */
+.login-page{
+    
+    position: relative;
+    min-height: 100vh;
+}
+
+.login-form{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.auth-form__submit-btn{
+    margin-right: 0;
+    margin-left: auto;
+}
+
+/* pages */
+.hide{
+    display: none;
+}
+
+.left-side{
+    min-height: 100vh;
+    background-color: black;
+
+}
+
+.right-side{
+    padding: 0;
+}
+
+.left-side_item{
+    display: flex;
+    cursor: pointer;
+    margin: 0;
+}
+
+
+.left-side_title{
+    margin-left: 8px;
+    transform: translateY(-4px);
+}
+
+.options-icon{
+    cursor: pointer;
+}
+
+.navbar{
+    background-color: black;
+    position: relative;
+}
+
+.dropdown-icon{
+    cursor: pointer;
+}
+
+/* employee page */
+.img-holder{
+    margin-top: 24px;
+}
+.avatar-img{
+    margin-left: 12px;
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+}
+
+.update-info_form{
+    margin-top: 10px;
+}
+
+.absent-form{
+    margin: 8px 16px;
+}
+
+.total-absent_btn{
+    margin-top: 8px;
+    margin-left: 16px;
+}
+/* chief-task management */
+#suggestions .list-group-item{
+    cursor: pointer;
+}
+
+#suggestions .list-group-item:hover{
+    background-color: #ccc;
+}
+
+.toast{
+    z-index: 1;
+    position: absolute;
+    top : 32px;
+    right: 32px;
+    width: 400px;
+}
+
+/* > Tablet */
+@media (min-width: 740px){ 
+    .login-form{
+        max-width: 50%;
+    }
+
+    .update-info_form{
+        max-width: 70%;
+        transform: translateX(25%);
+    }
+}
+
+@media (max-width: 740px){
+    .left-side{
+        display: none;
+    }
+
+    .update-info_date-of-birth{
+        transform: translateY(-100px);
+    }
+}
+
+
+/* ADMIN */
