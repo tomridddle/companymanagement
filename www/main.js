@@ -889,8 +889,8 @@ function handleOpenTask(btn){
 function handleSumbitTask(btn){
     let id = parseInt(btn.getAttribute('taskId'))
     let fileInput = document.querySelector('#document')
-	let summernote = document.querySelector('.emp-task_submit-content').value.trim()
-
+	let summernote = document.querySelector('.emp-task_submit-content')
+    if(summernote != null) summernote = summernote.value.trim()
     $('.submit-task_error-msg').text('')
     $('.submit-task_success-msg').text('')
 
@@ -1029,9 +1029,82 @@ function taskStatusInteract(){
 }
 
 
-/////////////////////////////////////ADMIN////////////////////////////////////
+/////////////////////////////////////Employee Absent////////////////////////////////////
+function loadAbsent(){
+    let userName = document.querySelector('.emp_user-name').innerHTML
+    let absentDays = 0;
+    let totalAbsent = document.querySelector('.total-absent')
 
+    fetch("http://localhost:8080/phase3-employee/emp_api/load_absent.php",{
+        'method' : 'POST',
+        'body' : new URLSearchParams({
+            'username': userName
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        let tbody = document.querySelector('tbody')
+        let count = 1;
+        
 
+        [...data].forEach(row => {
+            let tr = document.createElement('tr');
+
+            let content = ` <th scope="row">${count}</th>
+                        <td>${row.Reason}</td>
+                        <td>${row.AbsentDays}</td>
+                        <td>${row.SubmitDate}</td>
+                        <td>${row.Status}</td>`
+
+            tr.innerHTML = content
+            tbody.appendChild(tr)
+
+            if(row.Status == 'approved')
+                absentDays += row.AbsentDays
+
+            count++
+        })
+        totalAbsent.innerHTML = absentDays
+        if(absentDays == 0) totalAbsent.classList.add('text-info')
+        if(absentDays < 12) totalAbsent.classList.add('text-warning')
+        else totalAbsent.classList.add('text-danger')
+
+        
+    })
+}
+
+function handleAbsentRequest(){
+    //validate
+    let summerNote = document.querySelector('.absent-reason_submit')
+    let absentDay = document.querySelector('#absent-day_input')
+    let errorMsg = document.querySelector('.absent-request_error-msg')
+    errorMsg.innerHTML = ''
+    
+    let userName = document.querySelector('.emp_user-name').innerHTML
+    let totalAbsent = document.querySelector('.total-absent')
+    totalAbsent = parseInt(totalAbsent.innerHTML)
+
+    if(absentDay.value == ''){
+        errorMsg.innerHTML = 'Khong duoc bo trong so ngay muon nghi'
+    }
+    else{
+        let absentDayInt = parseInt(absentDay.value)
+        
+        if(totalAbsent >= 12) errorMsg.innerHTML = 'Khong the xin nghi them'
+        else if(summerNote.value.trim() == ''){
+            //thong bao loi
+            errorMsg.innerHTML = 'Thieu li do xin nghi'
+        }
+        else if(absentDayInt < 1 || absentDayInt > (12 - totalAbsent)){
+            errorMsg.innerHTML = 'So ngay nghi khong hop le'
+        }
+        else{
+            // console.log(userName) 
+            // console.log(totalAbsent)
+            //fetch -> thong bao + progress bar + tat pop up
+        }
+    } 
+}
 
 window.onload = () => {
     
@@ -1058,8 +1131,20 @@ window.onload = () => {
     //////////////////////////////Employee Task ///////////////////
     let assignEmp = document.querySelector('.employee-page_assigned-tasks')
     if(assignEmp != null){
+        $('.add-task-modal_summernote #summernote').summernote()
+        $(".custom-file-input").on("change", function () {
+			var fileName = $(this).val().split("\\").pop();
+			$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+		});
         load_assigned_task()
         //taskStatusInteract()
+    }
+
+    //////////////////////////////Employee Attendence//////////////////
+    let absentEmp = document.querySelector('.employee-page_attendence')
+    if(absentEmp != null){
+        $('.add-request_absent #summernote').summernote()
+        loadAbsent()
     }
     
 }

@@ -53,7 +53,7 @@
 
                 <div class="chief-page_left-navbar_item left-side_item mt-3" id="attendence">
                     <i class="fas fa-calendar-week text-white"></i>
-                    <a href="#" class="text-white chief-page_left-title left-side_title" >Attendence</a>
+                    <a href="http://localhost:8080/phase3-employee/employee_attendence.php" class="text-white chief-page_left-title left-side_title" >Attendence</a>
                 </div>
 
                 <div class="chief-page_left-navbar_item left-side_item mt-3" id="log-out">
@@ -76,7 +76,7 @@
                             <a href="http://localhost:8080/phase3-employee/employee_task.php" class=" chief-page_left-title left-side_title" >Assigned Tasks</a>
                           </a>
                           <a class="dropdown-item" href="#" id="attendence">
-                            <a href="#" class=" chief-page_left-title left-side_title" >Attendence</a>
+                            <a href="http://localhost:8080/phase3-employee/employee_attendence.php" class=" chief-page_left-title left-side_title" >Attendence</a>
                           </a>
                           <a class="dropdown-item" href="#" id="log-out">
                             <a href="http://localhost:8080/login_page.html" class=" chief-page_left-title left-side_title" >Log out</a>
