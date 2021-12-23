@@ -141,7 +141,7 @@
     }
 
     function load_absent_requests($department){
-        $sql = "select * from absentmanagement where Department = ?";
+        $sql = "select * from absentmanagement where Role = 0 and Department = ?";
 
         $conn = get_connection();
 

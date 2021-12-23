@@ -10,7 +10,7 @@
                 </button>
             </div>
             <div class="col-md-6 col-sm-6 text-secondary">
-                Total Absents: <span class="total-absent"></span>/12
+                Total Absents: <span class="total-absent"></span>/15
             </div>
         </div>
 

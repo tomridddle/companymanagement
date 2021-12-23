@@ -752,7 +752,7 @@ function load_absent_requests(){
     fetch('http://localhost:8080/api_chief/load_absent_request.php',{
         'method' : 'POST',
         'body' : new URLSearchParams({
-            'department' : 'dep a'
+            'department' : department
         })
     })
     .then(res => res.json())
@@ -822,7 +822,7 @@ function rejectAbsentRequest(id){
     .then(res => res.json())
     .then(data => {
         if(data.code == 0){
-            $('.alert-success .msg').text('Reject Successfully')
+            $('.alert-success .msg').text('Approve Successfully')
             $('.alert-success.toast').removeClass('hide')
             
             setTimeout(() => {
@@ -1156,7 +1156,7 @@ function loadAbsent(){
 
             count++
 
-            if(disableAbsentReq(row.Status) == false){
+            if(disableAbsentReq(row.SubmitDate) == false){
                 btn.disabled = true
             }else{
                 btn.disabled = false
@@ -1179,6 +1179,10 @@ function disableAbsentReq(submitDate){
 }
 
 function handleAbsentRequest(){
+    let maxAbsent = 12
+    let thisischief = document.querySelector('.employee-page_attendence')
+    if(thisischief != null) maxAbsent = 15
+    //console.log(maxAbsent)
     //validate
     let summerNote = document.querySelector('.absent-reason_submit')
     let absentDay = document.querySelector('#absent-day_input')
@@ -1205,12 +1209,12 @@ function handleAbsentRequest(){
     else{
         let absentDayInt = parseInt(absentDay.value)
         
-        if(totalAbsent >= 12) errorMsg.innerHTML = 'Khong the xin nghi them'
+        if(totalAbsent >= maxAbsent) errorMsg.innerHTML = 'Khong the xin nghi them'
         else if(summerNote.value.trim() == ''){
             //thong bao loi
             errorMsg.innerHTML = 'Thieu li do xin nghi'
         }
-        else if(absentDayInt < 1 || absentDayInt > (12 - totalAbsent)){
+        else if(absentDayInt < 1 || absentDayInt > (maxAbsent - totalAbsent)){
             errorMsg.innerHTML = 'So ngay nghi khong hop le'
         }
         else{
