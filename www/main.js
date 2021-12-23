@@ -16,19 +16,10 @@ function validateLogin(){
         userName.focus()
     }
 
-    
-
     if(pass.value === ''){
         passMsg.innerHTML = 'Vui long khong bo trong'
         isValid = false
     }
-
-    
-    // if(pass.value !== '' && pass.value === userName.value){
-    //     //pop up re sign up
-    //     isValid = false
-    //     $('#re-sign-up_modal').modal('show')
-    // }
 
     return isValid
 }
@@ -371,9 +362,6 @@ function chiefUpdateInfo(){
 }
 
 function chiefTaskFull(){
-    // create add task summer note
-    // if($('.add-task-modal_summernote #summernote') !== null)
-    //     $('.add-task-modal_summernote #summernote').summernote()
     
     //search suggestion
     searchSuggest()
@@ -725,26 +713,127 @@ function turnOffModal(){
     $('#chief_task-process').modal('hide')
     $('#chief_task-process').modal('hide') //cancel
 }
+////////////////////Chief handle absent request ////////////////
+class Stack {
+    constructor() {
+      this.stack = [];
+    }
+  
+    push(item) {
+      return this.stack.push(item);
+    }
+  
+    pop() {
+      return this.stack.pop();
+    }
+  
+    peek() {
+      return this.stack[this.length - 1];
+    }
+  
+    get length() {
+      return this.stack.length;
+    }
+  
+    isEmpty() {
+      return this.length === 0;
+    }
+}
+  
+  
+function load_absent_requests(){
+    let department = document.querySelector('.employee-department_title').innerHTML
+    // console.log(department)
+    let stack = new Stack()
+    let tbody = document.querySelector('tbody')
+    tbody.innerHTML = ''
+    let count = 1
 
-// function handleDelete(trashBtn){
-//     let tr = trashBtn.parentElement.parentElement
-//     let id = tr.getAttribute('task-id')
+    fetch('http://localhost:8080/api_chief/load_absent_request.php',{
+        'method' : 'POST',
+        'body' : new URLSearchParams({
+            'department' : 'dep a'
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        // console.log(data)
+        // console.log([...data]);
+        [...data].forEach(row => {
+            //console.log(row)
+            stack.push(row)
+        })
+        
+        while(!stack.isEmpty()){
+            let tr = document.createElement('tr')
+            let row = stack.pop()
+            let disable = 'disabled'
+            if(row.Status == null || row.Status == '' ) disable = ''
+
+            let content = `<th scope="row">${count}</th>
+                                <td>${row.FullName}</td>
+                                <td>${row.UserName}</td>
+                                <td>${row.Reason}</td>
+                                <td>${row.AbsentDays}</td>
+                                <td><a href="${row.AttachedFile}" download>${row.AttachedFile}</a></td>
+                                <td>
+                                    <button class="btn btn-success" onclick = "approveAbsentRequest(${row.AbsID})" ${disable}>Approve</button>
+                                    <button class="btn btn-danger" onclick = "rejectAbsentRequest(${row.AbsID})" ${disable}>Reject</button>
+                            </td>`
+
+            tr.innerHTML = content
+            count++
+            tbody.appendChild(tr)
+        }
+    })
+}
+
+function approveAbsentRequest(id){
     
-//     let confirmModal = document.querySelector('#deleteTaskConfirm')
-//     let taskId = document.querySelector('.task-id_title')
-//     taskId.innerHTML = id + ' ?'
+    fetch('http://localhost:8080/api_chief/approve_absent_request.php', {
+        'method' : 'POST',
+        'body' : new URLSearchParams({
+            'requestid' : id,
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.code == 0){
+            $('.alert-success .msg').text('Approve Successfully')
+            $('.alert-success.toast').removeClass('hide')
+            
+            setTimeout(() => {
+                $('.alert-success .msg').text('')
+                $('.alert-success.toast').addClass('hide')
 
-//     let confirmedBtn = document.querySelector('.task-delete_confirmed-btn')
-//     confirmedBtn.addEventListener('click', e => {
-//         fetch("http://localhost:8080/api_chief/delete_task.php", {
-//             'method' : 'POST',
-//             'body' : new URLSearchParams({
-//                 'task-id' : parseInt(id)
-//             })
-//         })
+                load_absent_requests()
+            },2000)
+        }
+    })
+}
 
-//     })
-// }
+function rejectAbsentRequest(id){
+    fetch('http://localhost:8080/api_chief/reject_absent_request.php', {
+        'method' : 'POST',
+        'body' : new URLSearchParams({
+            'requestid' : id,
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.code == 0){
+            $('.alert-success .msg').text('Reject Successfully')
+            $('.alert-success.toast').removeClass('hide')
+            
+            setTimeout(() => {
+                $('.alert-success .msg').text('')
+                $('.alert-success.toast').addClass('hide')
+
+                load_absent_requests()
+            },2000)
+        }
+    })
+}
 //////////////////////////////////Employee/////////////////////////
 function load_assigned_task(){
     let userName = document.querySelector('.emp_user-name').innerHTML
@@ -929,6 +1018,7 @@ function handleSumbitTask(btn){
             if(progress >= 100) $('#openTaskEmp').modal('hide')
         })
 
+        
         xhr.open('POST','emp_api/submit_task.php',true);
         xhr.send(data);
     }
@@ -1034,6 +1124,7 @@ function loadAbsent(){
     let userName = document.querySelector('.emp_user-name').innerHTML
     let absentDays = 0;
     let totalAbsent = document.querySelector('.total-absent')
+    let btn = document.querySelector('.absent-request_btn')
 
     fetch("http://localhost:8080/phase3-employee/emp_api/load_absent.php",{
         'method' : 'POST',
@@ -1046,6 +1137,7 @@ function loadAbsent(){
         let tbody = document.querySelector('tbody')
         let count = 1;
         
+        tbody.innerHTML = '';
 
         [...data].forEach(row => {
             let tr = document.createElement('tr');
@@ -1063,6 +1155,12 @@ function loadAbsent(){
                 absentDays += row.AbsentDays
 
             count++
+
+            if(disableAbsentReq(row.Status) == false){
+                btn.disabled = true
+            }else{
+                btn.disabled = false
+            }
         })
         totalAbsent.innerHTML = absentDays
         if(absentDays == 0) totalAbsent.classList.add('text-info')
@@ -1071,6 +1169,13 @@ function loadAbsent(){
 
         
     })
+}
+
+function disableAbsentReq(submitDate){
+    let today = new Date() //currentday
+    let compareDate = new Date(today.getTime() - 7*24*60*60*1000)
+    //neu ham nay` false -> phai disable nut
+    return Date.parse(submitDate) < Date.parse(compareDate)
 }
 
 function handleAbsentRequest(){
@@ -1084,6 +1189,16 @@ function handleAbsentRequest(){
     let totalAbsent = document.querySelector('.total-absent')
     totalAbsent = parseInt(totalAbsent.innerHTML)
 
+    let fullName = document.querySelector('.employee-name').innerHTML
+    let department = document.querySelector('.employee-department_title').innerHTML
+    let file = document.querySelector('#prove').files[0]
+    let bar = document.querySelector('.progress-bar');
+
+    let sendTo = 'emp_api/submit_absent.php'
+    let chief = document.querySelector('.chief-page_main.employee-page_attendence')
+    if(chief != null)
+        sendTo = 'phase3-employee/'+ sendTo
+    
     if(absentDay.value == ''){
         errorMsg.innerHTML = 'Khong duoc bo trong so ngay muon nghi'
     }
@@ -1099,9 +1214,47 @@ function handleAbsentRequest(){
             errorMsg.innerHTML = 'So ngay nghi khong hop le'
         }
         else{
-            // console.log(userName) 
-            // console.log(totalAbsent)
-            //fetch -> thong bao + progress bar + tat pop up
+            //username: userName, absentday: absentDayInt,
+            //fullname: fullName, department: department, file-upload: file
+            //reason: summerNote.value.trim()
+            let data = new FormData()
+            data.append('username',userName)
+            data.append('absentday',absentDayInt)
+            data.append('fullname',fullName)
+            data.append('department',department)
+            data.append('file-upload',file)
+            data.append('reason',summerNote.value.trim())
+
+            let xhr = new XMLHttpRequest()
+
+            xhr.addEventListener('load', e => {
+                if(xhr.status === 200){
+                    $('.absent-request_success-msg').text('Submit Success!')
+                    loadAbsent()
+                    //turn off request btn 
+                    let btn = document.querySelector('.absent-request_btn')
+                    btn.disabled = true
+                    
+                }else{
+                    $('.absent-request_error-msg').text('Upload fail with code: ' + xhr.status)
+                }
+            })
+
+            xhr.upload.addEventListener('progress', e => {
+                let loaded = e.loaded						
+                let progress = Math.ceil(loaded * 100 / e.total) + 5
+                //console.log(progress)
+                //update progress bar //style="width: 25%" aria-valuenow="25"
+                bar.style.width = progress + '%'
+                if(progress >= 100){
+                    setTimeout(() => {
+                        $('#openAbsentReq').modal('hide')
+                    }, 1000)
+                }
+            })
+    
+            xhr.open('POST',sendTo,true);
+            xhr.send(data);
         }
     } 
 }
@@ -1144,7 +1297,16 @@ window.onload = () => {
     let absentEmp = document.querySelector('.employee-page_attendence')
     if(absentEmp != null){
         $('.add-request_absent #summernote').summernote()
+        $(".custom-file-input").on("change", function () {
+			var fileName = $(this).val().split("\\").pop();
+			$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+		});
         loadAbsent()
     }
     
+    /////////////////////////////////Chief handle absent request ///////////////////
+    let chiefHandleAbsent = document.querySelector('.chief_attendence-manage')
+    if(chiefHandleAbsent != null){
+        load_absent_requests()
+    }
 }

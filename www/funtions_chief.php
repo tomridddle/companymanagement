@@ -139,4 +139,50 @@
 
         return -1;
     }
+
+    function load_absent_requests($department){
+        $sql = "select * from absentmanagement where Department = ?";
+
+        $conn = get_connection();
+
+        $stm = $conn->prepare($sql);
+        $stm->bind_param('s',$department);
+        $stm->execute();
+
+        $ouput = array();
+
+        $result = $stm->get_result();
+
+        while($row = $result->fetch_assoc()){
+            $ouput[] = $row;
+        }
+
+        return $ouput;
+    }
+
+    function approve_absent_request($absentid){
+        $sql = "update absentmanagement set Status = 'approved' where AbsID = ?";
+
+        $conn = get_connection();
+
+        $stm = $conn->prepare($sql);
+        $stm->bind_param('i',$absentid);
+        $stm->execute();
+
+        if($stm->affected_rows == 1) return $absentid;
+        return -1;
+    }
+
+    function reject_absent_request($absentid){
+        $sql = "update absentmanagement set Status = 'refused' where AbsID = ?";
+
+        $conn = get_connection();
+
+        $stm = $conn->prepare($sql);
+        $stm->bind_param('i',$absentid);
+        $stm->execute();
+
+        if($stm->affected_rows == 1) return $absentid;
+        return -1;
+    }
 ?>

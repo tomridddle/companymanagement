@@ -5,7 +5,7 @@
         <div class="emp_user-name hide"><?=$userName?></div>
         <div class="row m-2">
             <div class="col-md-6 col-sm-6">
-                <button class="btn btn-primary" data-toggle="modal" data-target="#openAbsentReq">
+                <button class="btn btn-primary absent-request_btn" data-toggle="modal" data-target="#openAbsentReq">
                     <i class="fas fa-plus text-white"></i> Absent Request
                 </button>
             </div>
