@@ -10,6 +10,7 @@
     $gender = $getGender;
     $dateJoined = $getDateJoin;
     $dateBirth = $getDateBirth;
+    if(strtolower($role) != 'chief') die('You dont have permission to access this page!');
 ?>
 
 <!DOCTYPE html>

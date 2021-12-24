@@ -7,5 +7,5 @@
         header('Location: chief_update-info.php');
     
     if($lwRole == 'employee')
-        header('Location: phase3-employee/employee_update-info.php');
+        header('Location: phase3-employee/employee_task.php');
 ?>

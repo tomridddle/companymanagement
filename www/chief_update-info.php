@@ -5,10 +5,28 @@
                 <!-- main -->
                 <div class="chief-page_main chief-page_update-info">
                 <!--Update Info  -->
+
                     <div class="card update-info_form px-4">
                         <h3 class="text-center">Update Your Info</h3>
-    
-                        <div class="update-info_form-group form-group update-info_fullname">
+
+                        <form action="update-avatar.php" method="POST" enctype="multipart/form-data" id="update-avatar_form">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="custom-file add-avatar input-group">
+                                        <input accept="image/*" type="file" name="avatar" class="custom-file-input add-avatar_input" id="customFile">
+                                        <label class="custom-file-label" for="customFile">Choose file</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <button class="avatar-submit btn btn-primary">
+                                        Update Avatar
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="update-info_form-group form-group update-info_fullname mt-2">
                             <label for="fullname">
                                 Full Name: <span class="chief-info_fullname"><?= $fullName?></span>
                             </label>
@@ -135,26 +153,6 @@
     
                         <div class="update-info_form-group form-group">
                             <div class="row">
-                                <!-- <div class="col-md-6 col-sm-12 custom-file">
-                                    <label for="avatar">Avatar</label>
-                                    <div class="add-avatar">
-                                        <input type="file" name="avatar" multiple="multiple" class="custom-file-input">
-                                        <button class="avatar-submit btn btn-primary">
-                                            Update Avatar
-                                        </button>
-                                    </div>
-                                </div> -->
-                                <div class="col-md-6 col-sm-12 custom-file">
-                                    <form action="update-avatar.php" method="POST" enctype="multipart/form-data" id="update-avatar_form">
-                                        <div class="custom-file add-avatar">
-                                            <input accept="image/*" type="file" name="avatar" class="custom-file-input add-avatar_input" id="customFile">
-                                            <label class="custom-file-label" for="customFile">Choose file</label>
-                                            <button class="avatar-submit btn btn-primary">
-                                                Update Avatar
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
     
                                 <div class="col-md-6 col-sm-12 update-info_date-of-birth">
                                     <label for="date-birth">
@@ -170,6 +168,8 @@
                                     </div>
                                     <span class="error-msg text-danger"></span>
                                 </div>
+
+                                
                             </div>
                     
                         </div>

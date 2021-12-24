@@ -22,14 +22,16 @@
     }
 
     function submit_task($taskId,$file,$text){
+        $submitDate = date('Y-m-d H:i:s',time());
+
         $sql = "update taskmanagement 
-                set Status = 'Waiting', AttachedFile = ?, Content = ?
+                set Status = 'Waiting', SubmitDate = ? ,AttachedFile = ?, Content = ?
                 where TaskID = ?";
 
         $conn = get_connection();
 
         $stm = $conn->prepare($sql);
-        $stm->bind_param('ssi',$file,$text,$taskId);
+        $stm->bind_param('sssi',$submitDate,$file,$text,$taskId);
         $stm->execute();
 
         if($stm->affected_rows == 1)
