@@ -6,15 +6,13 @@
     require_once('../product_db.php');
     require_once('response_msg.php');
 
-    echo $_POST['departmentname'];
-
-    if (empty($_POST['departmentname']) ||
+    if (empty($_POST['departmentName']) ||
         empty($_POST['description']) ||
         empty($_POST['quantity'])) {
             error_response(150,'Dữ liệu đầu vào không hợp lệ');
     }
 
-    $name = $_POST['departmentname'];
+    $name = $_POST['departmentName'];
     $desc = $_POST['description'];
     $quantity = $_POST['quantity'];
 

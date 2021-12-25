@@ -1263,8 +1263,485 @@ function handleAbsentRequest(){
     } 
 }
 
+////////////////////ADMIN
+function showEmpInfo_AdminPage(){
+    const line = document.querySelector('.line');
+	const items = document.querySelectorAll('.category__item');
+	const linkStr = '.category__link';
+	const btnDepartment = document.querySelector('.btn-department');
+	const btnEmployee = document.querySelector('.btn-employee');
+
+	const employeeManagement = document.querySelector('#employee-management');
+	const facultyManagement = document.querySelector('#faculty-management');
+
+	employeeManagement.addEventListener('click', readEmployee);
+
+	function readEmployee() {
+		fetch('http://localhost:8080/phase2-admin/api/read_employees.php')
+			.then((res) => res.json())
+			.then(handleGetEmployee);
+	}
+
+	facultyManagement.addEventListener('click', readFaculty);
+
+	function readFaculty() {
+		fetch('http://localhost:8080/phase2-admin/api/read_faculties.php')
+			.then((res) => res.json())
+			.then(handleGetFaculty)
+			.then((list) => {
+				// for (let i = 0; i < list.children.length; i++) {
+				// 	fetch('http://localhost:8080/phase2-admin/api/read_employee.php', {
+				// 		method: 'POST',
+				// 		body: new URLSearchParams({ id: list.children[i].id }),
+				// 	})
+				// 		.then((res) => res.json())
+				// 		.then((response) => {
+				// 			if (response.code == 0) {
+				// 				list.children[i].children[1].children[1].textContent = response.data.FullName;
+				// 			} else {
+				// 				list.children[i].children[1].children[1].textContent = 'Trống';
+				// 			}
+				// 		});
+				// }
+			});
+	}
+
+	function getInfoModal(arr) {
+		const aboutList = document.querySelector('.about__list');
+		aboutList.addEventListener('click', function (e) {
+			if (e.target.matches('.about__item')) {
+				const employeePhoneNumber = e.target.querySelector('.about__item__phone').textContent;
+				const employeeEmail = e.target.querySelector('.about__item__gmail').textContent;
+				const employee = arr.filter(
+					(item) => item['Phone'] === employeePhoneNumber && item['Email'] === employeeEmail
+				)[0];
+				if (!document.body.querySelector('.modal')) {
+					openModal(employee);
+				}
+			}
+		});
+	}
+
+	function showSuccessMessage(title = 'Add') {
+		deleteAllModal();
+		const template = `<div class="sweet-alert">
+		<i class="fa fa-check sweet-icon"></i>
+		<p class="sweet-text">${title} Success!</p>
+	</div>`;
+		document.body.insertAdjacentHTML('beforeend', template);
+		document.body.querySelector('.sweet-alert').classList.add('show');
+		const items = document.querySelectorAll('.sweet-alert');
+		items &&
+			items.forEach(function (item) {
+				window.setTimeout(function () {
+					item.parentElement.removeChild(item);
+				}, 5000);
+			});
+	}
+
+	function deleteAllModal() {
+		while (document.body.querySelector('.modal')) {
+			const modal = document.body.querySelector('.modal');
+			document.body.removeChild(modal);
+		}
+	}
+
+	function openModal(employee) {
+		const template = `<div class="modal">
+					<div class="modal__content">
+						<i class="fa fa-times modal__close"></i>
+						<h2 class="modal__title">Information Employee</h2>
+						<div class="modal__main">
+							<div class="modal__avatar">
+								<img src="../${employee.ImgDir}" alt="" />
+								<button type="reset" class="button btn-primary admin__btn-reset">Reset password</button>
+							</div>
+							<div class="modal__info">
+								<div class="modal__more">Full name: <span>${employee.FullName}</span></div>
+								<div class="modal__more">User name: <span>${employee.UserName}</span></div>
+								<div class="modal__more">Gender: <span>${employee.Gender}</span></div>
+								<div class="modal__more">Age: <span>${employee.Age}</span></div>
+								<div class="modal__more">Department: <span>${employee.Department}</span></div>
+								<div class="modal__more">Role: <span>${employee.Role}</span></div>
+								<div class="modal__more">Email: <span>${employee.Email}</span></div>
+								<div class="modal__more">Phone number: <span>${employee.Phone}</span></div>
+								<div class="modal__more">Address: <span>${employee.Address}</span></div>
+							</div>
+						</div>
+					</div>
+				</div>`;
+		document.body.insertAdjacentHTML('beforeend', template);
+		document.body.querySelector('.modal .modal__content').parentNode.classList.add('show');
+		// reset password
+		const resetBtn = document.querySelector('.admin__btn-reset');
+		resetBtn.addEventListener('click', function (e) {
+			e.preventDefault();
+			const template = `<div class="modal show">
+			<div class="dialog">
+				<div class="dialog__top">Do you want to reset your password?</div>
+				<div class="dialog__bottom">
+					<button class="button btn-cancel">Maybe late</button>
+					<button class="button btn-primary admin__confirm__btn-reset">Reset now</button>
+				</div>
+			</div>
+		</div>`;
+			document.body.insertAdjacentHTML('beforeend', template);
+			document.body.querySelector('.modal .dialog').parentNode.classList.add('show');
+
+			const confirmResetBtn = document.querySelector('.admin__confirm__btn-reset');
+			confirmResetBtn.addEventListener('click', function () {
+				fetch('http://localhost:8080/phase2-admin/api/reset_password.php', {
+					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json',
+						Accept: 'application/json',
+					},
+					body: JSON.stringify({ id: `${employee.EmpID}` }),
+				})
+					.then((res) => res.json())
+					.then(showSuccessMessage('Reset'));
+			});
+		});
+	}
+
+	function changeCategory(categoryItem) {
+		[...items].forEach((item) => {
+			const link = item.querySelector(linkStr);
+			if (link.style) {
+				link.style = '';
+			}
+		});
+		categoryItem.querySelector(linkStr).style = 'background-color: #a99eda; color: white;';
+	}
+
+	function switchLine(categoryItem) {
+		const line = document.querySelector('.line');
+		line.style.top = categoryItem.offsetTop + 'px';
+		changeCategory(categoryItem);
+	}
+
+	function handleGetEmployee(response) {
+		if (response.code === 0) {
+			const employeeList = document.querySelector('#employee-list');
+			let arr = [];
+			employeeList.innerHTML = '';
+			response.data.forEach((employee) => {
+				let item = `<div class="about__item">
+							<div class="about__item__top">
+								<img
+								src="../${employee.ImgDir}"
+								alt=""
+								class="about__item__image"
+								/>
+							</div>
+								<div class="about__item__bottom">
+								<h3 class="about__item__name">${employee.FullName}</h3>
+								<div class="about__item__position">${employee.Role}</div>
+								<a href="tel:+0123456789" class="about__item__phone">${employee.Phone}</a>
+								<a href="mailto:123@gmail.com" class="about__item__gmail">${employee.Email}</a>
+								</div>
+							</div>`;
+				employeeList.insertAdjacentHTML('beforeend', item);
+				arr.push(employee);
+				const numberEmployee = document.querySelector('.about__top__title span');
+				numberEmployee.textContent = arr.length > 0 ? arr.length : 0;
+			});
+			getInfoModal(arr);
+		}
+	}
+
+	function handleGetFaculty(response) {
+		if (response.code === 0) {
+			const employeeList = document.querySelector('#employee-list');
+			employeeList.innerHTML = '';
+			response.data.forEach((department) => {
+				let item = `<div id="${department.empID}" class="about__item">
+							<div class="about__item__top">
+								<i class="about__item__icon fas fa-home"></i>
+								<h3 class="about__item__department">${department.name}</h3>
+							</div>
+								<div class="about__item__bottom flex-left">
+								<div class="about__item__role">
+									<label>Leader:</label>
+									<div id="faculty__position" class="about__item__name sm"></div>
+								</div>
+								<div class="about__item__quantity">
+									<label>Quantity:</label>
+									${department.quantity}
+								</div>
+								<div class="about__item__desc"><label>Description:</label>${department.description}</div>
+								</div>
+							</div>`;
+				employeeList.insertAdjacentHTML('beforeend', item);
+			});
+			return employeeList;
+		}
+	}
+
+	// animation category
+	items &&
+		[...items].forEach((item) => {
+			const link = item.querySelector(linkStr);
+			if (line.offsetTop === item.offsetTop) {
+				link.style = 'background-color: #a99eda; color: white;';
+			} else {
+				link.style = '';
+			}
+			item.addEventListener('click', (e) => {
+				line.style.top = e.target.offsetTop + 'px';
+				changeCategory(e.target);
+			});
+		});
+	// close modal
+	document.body.addEventListener('click', (e) => {
+		if (e.target.matches('.modal__close')) {
+			const modal = e.target.parentNode.parentNode;
+			modal.parentNode.removeChild(modal);
+		} else if (e.target.matches('.modal')) {
+			e.target.parentNode.removeChild(e.target);
+		} else if (e.target.matches('.btn-cancel')) {
+			const dialog = e.target.parentNode.parentNode.parentNode;
+			dialog.parentNode.removeChild(dialog);
+		}
+	});
+	//open form new department
+	btnDepartment &&
+		btnDepartment.addEventListener('click', () => {
+			const template = `<div class="modal">
+			<div class="modal__content">
+				<i class="fa fa-times modal__close"></i>
+				<div class="modal__title">Add a new department</div>
+				<form action="http://localhost:8080/phase2-admin/api/add_department.php" id="form-add-department" method="POST">
+					<div class="modal__item">
+						<label class="modal__item__text">Depart's name</label>
+						<input type="text" name="departmentName" class="modal__item__input" />
+					</div>
+					<div class="modal__item">
+						<label class="modal__item__text">Number of rooms</label>
+						<input type="number" name="quantity" class="modal__item__input" />
+					</div>
+					<div class="modal__item">
+						<label class="modal__item__text">Description</label>
+						<input type="text" name="description" class="modal__item__input" />
+					</div>
+					<div class="modal__errorMessage">
+						<i class="fas fa-exclamation-circle"></i>
+						<span class="modal__errorMessage__text">test</span>
+					</div>
+					<button type="submit" class="button btn-primary">Add</button>
+				</form>
+			</div>
+		</div>`;
+			document.body.insertAdjacentHTML('beforeend', template);
+			document.body.querySelector('.modal').classList.add('show');
+			const form = document.querySelector('#form-add-department');
+			form.addEventListener('submit', function (e) {
+				e.preventDefault();
+				let objDepartment = {};
+				for (let i = 0; i < this.elements.length; i++) {
+					let inputModal = this.elements[i];
+					const errorMessage = form.querySelector('.modal__errorMessage');
+					inputModal.addEventListener('input', function () {
+						errorMessage.style.opacity = '0';
+					});
+					if (inputModal.type === 'text' || inputModal.type === 'number') {
+						if (!inputModal.value) {
+							errorMessage.style.opacity = '1';
+							switch (inputModal.name) {
+								case 'description':
+									errorMessage.querySelector(
+										'.modal__errorMessage__text'
+									).textContent = `Vui lòng nhập mô tả`;
+									break;
+								case 'departmentName':
+									errorMessage.querySelector(
+										'.modal__errorMessage__text'
+									).textContent = `Vui lòng nhập tên phòng ban`;
+									break;
+								case 'quantity':
+									errorMessage.querySelector(
+										'.modal__errorMessage__text'
+									).textContent = `Vui lòng nhập số lượng phòng`;
+									break;
+							}
+						} else if (inputModal.name === 'quantity') {
+							if (parseInt(inputModal.value) <= 0) {
+								errorMessage.style.opacity = '1';
+								errorMessage.querySelector(
+									'.modal__errorMessage__text'
+								).textContent = `Vui lòng nhập số lượng phòng hợp lệ`;
+							} else {
+								objDepartment[inputModal.name] = parseInt(inputModal.value);
+							}
+						} else {
+							objDepartment[inputModal.name] = inputModal.value;
+						}
+					}
+				}
+				addDepartment(objDepartment);
+			});
+			function addDepartment(form) {
+				if (
+					form.hasOwnProperty('departmentName') &&
+					form.hasOwnProperty('quantity') &&
+					form.hasOwnProperty('description')
+				) {
+					switchLine(facultyManagement);
+					fetch('http://localhost:8080/phase2-admin/api/add_department.php', {
+						method: 'POST',
+						body: new URLSearchParams({
+							departmentName: form['departmentName'],
+							quantity: form['quantity'],
+							description: form['description'],
+						}),
+					})
+						.then((res) => res.json())
+						.then(readFaculty)
+						.then(showSuccessMessage);
+				}
+			}
+		});
+	btnEmployee &&
+		btnEmployee.addEventListener('click', function (e) {
+			const template = `<div class="modal">
+				<div class="modal__content">
+					<i class="fa fa-times modal__close"></i>
+					<h2 class="modal__title">Add a new employee</h2>
+					<form action="http://localhost:8080/phase2-admin/api/add_employee.php" id="form-add-employee" method="POST">
+						<div class="modal__item">
+							<label class="modal__item__text">Full name</label>
+							<input type="text" name="fullName" class="modal__item__input" />
+						</div>
+						<div class="modal__item">
+							<label class="modal__item__text">User name</label>
+							<input type="text" name="username" class="modal__item__input" />
+						</div>
+						<div class="modal__item">
+							<label class="modal__item__text">Department's name</label>
+							<input type="text" name="department" class="modal__item__input" />
+						</div>
+						<div class="dropdown">
+							<div class="dropdown__select">
+								<span name="role" class="dropdown__selected">Employee</span>
+								<i class="fa fa-caret-left dropdown__caret"></i>
+							</div>
+							<ul class="dropdown__list">
+								<input type="radio" class="dropdown__radio" name= "role" value="Employee"/>
+								<li class="dropdown__item">
+									<span class="dropdown__text">Employee</span>
+									<i class="fa fa-user dropdown__icon"></i>
+								</li>
+								<li class="dropdown__item">
+									<span class="dropdown__text">Chief</span>
+									<i class="fas fa-utensils dropdown__icon"></i>
+								</li>
+							</ul>
+						</div>
+						<div class="modal__errorMessage">
+							<i class="fas fa-exclamation-circle"></i>
+							<span class="modal__errorMessage__text"></span>
+						</div>
+						<button type="submit" class="button btn-primary">Add</button>
+					</form>
+				</div>
+			</div>`;
+			document.body.insertAdjacentHTML('beforeend', template);
+			document.body.querySelector('.modal').classList.add('show');
+			const dropdownSelect = document.querySelector('.dropdown__select');
+			const dropdownList = document.querySelector('.dropdown__list');
+			const dropdownIcon = document.querySelector('.dropdown__caret');
+			const dropdownSelected = document.querySelector('.dropdown__selected');
+			const dropdownItems = document.querySelectorAll('.dropdown__item');
+			// Custom select option
+			dropdownSelect &&
+				dropdownSelect.addEventListener('click', function (e) {
+					dropdownList && dropdownList.classList.toggle('show');
+					dropdownIcon && dropdownIcon.classList.toggle('fa-caret-right');
+				});
+			dropdownItems &&
+				[...dropdownItems].forEach(function (item) {
+					item.addEventListener('click', function (e) {
+						const text = e.target.querySelector('.dropdown__text').textContent;
+						dropdownSelected.textContent = text;
+						dropdownList.classList.remove('show');
+						dropdownIcon.classList.remove('fa-caret-right');
+					});
+				});
+
+			const form = document.querySelector('#form-add-employee');
+			form.addEventListener('submit', function (e) {
+				e.preventDefault();
+				let objDepartment = {};
+				for (let i = 0; i < this.elements.length; i++) {
+					let inputModal = this.elements[i];
+					console.log(inputModal);
+					const errorMessage = form.querySelector('.modal__errorMessage');
+					inputModal.addEventListener('input', function () {
+						errorMessage.style.opacity = '0';
+					});
+					if (inputModal.type === 'text') {
+						if (!inputModal.value) {
+							errorMessage.style.opacity = '1';
+							switch (inputModal.name) {
+								case 'fullName':
+									errorMessage.querySelector(
+										'.modal__errorMessage__text'
+									).textContent = `Vui lòng nhập tên nhân viên`;
+									break;
+								case 'username':
+									errorMessage.querySelector(
+										'.modal__errorMessage__text'
+									).textContent = `Vui lòng nhập username`;
+									break;
+								case 'department':
+									errorMessage.querySelector(
+										'.modal__errorMessage__text'
+									).textContent = `Vui lòng nhập phòng ban của nhân viên`;
+									break;
+							}
+						} else {
+							objDepartment[inputModal.name] = inputModal.value;
+						}
+					} else if (inputModal.type === 'radio') {
+						inputModal.value = dropdownSelected.textContent;
+						objDepartment[inputModal.name] = inputModal.value;
+						console.log(inputModal.value);
+					}
+				}
+				console.log(objDepartment);
+				addEmployee(objDepartment);
+			});
+			function addEmployee(form) {
+				if (
+					form.hasOwnProperty('fullName') &&
+					form.hasOwnProperty('username') &&
+					form.hasOwnProperty('department') &&
+					form.hasOwnProperty('role')
+				) {
+					switchLine(employeeManagement);
+					fetch('http://localhost:8080/phase2-admin/api/add_employee.php', {
+						method: 'POST',
+						body: new URLSearchParams({
+							fullName: form['fullName'],
+							username: form['username'],
+							department: form['department'],
+							role: form['role'],
+						}),
+					})
+						.then((res) => res.json())
+						.then(readEmployee)
+						.then(showSuccessMessage);
+				}
+			}
+		});
+}
+
 window.onload = () => {
-    
+    ////////////////////////ADMIN///////////////////
+    const adminPage = document.querySelector("#admin-page");
+    if (adminPage != null) {
+        showEmpInfo_AdminPage();
+    }
     ///////////////////////////LOGIN PAGE //////////////////////////
     let authFormSubmitBtn = document.querySelector('.auth-form__submit-btn')
     if(authFormSubmitBtn != null)
