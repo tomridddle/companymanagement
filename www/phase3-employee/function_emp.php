@@ -89,4 +89,23 @@
         if($stm->affected_rows == 1) return 1; //thanh cong
         return -1;
     }
+
+    function submit_absent2($userName,$absentDay,$fullName,$department,$reason,$attachFile,$role){
+        $key = 0;
+        if(strtolower($role) == 'chief') $key = 1;
+        
+        $submitDate = date('Y-m-d',time());
+        
+        $sql = "insert into absentmanagement 
+                (FullName,UserName,Department,AbsentDays,Reason,SubmitDate,AttachedFile,Role)
+                values (?,?,?,?,?,?,?,?)";
+        $conn = get_connection();
+
+        $stm = $conn->prepare($sql);
+        $stm -> bind_param('sssisssi',$fullName,$userName,$department,$absentDay,$reason,$submitDate,$attachFile,$key);
+        $stm -> execute();
+
+        if($stm->affected_rows == 1) return 1; //thanh cong
+        return -1;
+    }
 ?>

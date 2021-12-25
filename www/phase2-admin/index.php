@@ -1,3 +1,8 @@
+<?php 
+	require_once('../session_start.php');
+	//if(strtolower($role) != 'admin') die('You dont have persimion to access!!!');
+?>
+
 <!DOCTYPE html>
 <html id="admin-html" lang="en">
 	<head>

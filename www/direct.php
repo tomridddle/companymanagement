@@ -8,4 +8,7 @@
     
     if($lwRole == 'employee')
         header('Location: phase3-employee/employee_task.php');
+
+    if($lwRole == 'admin')
+        header('Location: phase2-admin/index.php');
 ?>

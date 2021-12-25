@@ -2,6 +2,7 @@
     header('Content-Type: application/json');
     require_once('../../response_msg.php');
     require_once('../function_emp.php');
+    require_once('../../session_start.php');
     
     $file = '';
 
@@ -35,11 +36,12 @@
             }
         }
 
-        $res = submit_absent($_POST['username'],$_POST['absentday'],$_POST['fullname'],$_POST['department'],$_POST['reason'],$file);
+      //   $res = submit_absent($_POST['username'],$_POST['absentday'],$_POST['fullname'],$_POST['department'],$_POST['reason'],$file);
+      $res = submit_absent2($_POST['username'],$_POST['absentday'],$_POST['fullname'],$_POST['department'],$_POST['reason'],$file,$role);
         
-        if($res == -1) error_response(115,'Absent request failed');
+      if($res == -1) error_response(115,'Absent request failed');
 
-        success_response('Submit Task Successfully',$res);
+      success_response('Submit Task Successfully',$res);
     }
     
 ?>

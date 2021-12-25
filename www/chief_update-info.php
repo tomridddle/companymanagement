@@ -63,7 +63,7 @@
     
                         <div class="update-info_form-group form-group">
                             <div class="row">
-                                <div class="col-md-6 col-sm-12 update-info_age">
+                                <div class="col-md-6 col-sm-0 update-info_age">
                                     <label for="age">
                                         Age: <span class="chief-info_age"><?= $age?></span>
                                     </label>
@@ -114,7 +114,7 @@
     
                         <div class="update-info_form-group form-group">
                             <div class="row">
-                                <div class="col-md-6 col-sm-12 chief_gender">
+                                <div class="col-md-6 col-sm-0 chief_gender">
                                     <label for="gender">
                                         Gender: <span class="chief-info_gender"><?= $gender?></span>
                                     </label>
@@ -154,7 +154,7 @@
                         <div class="update-info_form-group form-group">
                             <div class="row">
     
-                                <div class="col-md-6 col-sm-12 update-info_date-of-birth">
+                                <div class="col-md-6 col-sm-0 update-info_date-of-birth">
                                     <label for="date-birth">
                                         Date of birth: <span class="chief-info_date-birth"><?= $dateBirth?></span>
                                     </label>
@@ -169,7 +169,9 @@
                                     <span class="error-msg text-danger"></span>
                                 </div>
 
-                                
+                                <div class="col-md-6 col-sm-12">
+                                        
+                                </div>
                             </div>
                     
                         </div>
